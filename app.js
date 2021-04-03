@@ -14,6 +14,55 @@ function fetchUsers() {
     return fetchData(`${ BASE_URL }/users`)
 }
 
+function fetchUserPosts(userId) {
+    return fetchData(`${ BASE_URL }/users/${ userId }/posts?_expand=user`);
+  }
+  
+  function fetchPostComments(postId) {
+    return fetchData(`${ BASE_URL }/posts/${ postId }/comments`);
+  }
+
+function setCommentsOnPost(post) {
+    if (post.comments) {
+        return Promise.reject(null)
+    }
+    return fetchPostComments(post.id)
+        .then(function(comments) {
+            post.comments = comments
+            return post;
+    })
+    .catch(function(error){
+        console.log(error)
+    })
+
+}
+
+function renderPost(post) {
+    return $(`
+        <div class="post-card">
+            <header>
+                <h3>${post.title}</h3>
+                <h3>--- ${post.username}</h3>
+            </header>
+            <p>${post.body}</p>
+            <footer>
+                <div class="comment-list"></div>
+                <a href="#" class="toggle-comments">(<span class="verb">show</span> comments)</a>
+            </footer>
+        </div>
+    `).data('post', post)
+}
+
+function renderPostList(postList) {
+    $('#app section.active').removeClass('active')
+    const postListElement = $('#post-list');
+    postListElement.empty().addClass('active')
+    
+    postList.forEach(function (post) {
+      postListElement.append( renderPost(post) );
+    });
+  }
+
 function fetchUserAlbumList(userId) {
     return fetchData(`${ BASE_URL }/users/${userId}/albums?_expand=user&_embed=photos`)
 }
@@ -45,7 +94,6 @@ function renderUserList(userList) {
       userListElement.append( renderUser(user) );
     });
   }
-
 
 // function fetchUserList() {
 //     return fetch(BASE_URL)
@@ -101,9 +149,48 @@ function renderAlbumList(albumList) {
     })
 }  
 
+function toggleComments(postCardElement) {
+    const footerElement = postCardElement.find('footer');
+  
+    if (footerElement.hasClass('comments-open')) {
+      footerElement.removeClass('comments-open');
+      footerElement.find('.verb').text('show');
+    } else {
+      footerElement.addClass('comments-open');
+      footerElement.find('.verb').text('hide');
+    }
+  }
+
+$('#post-list').on('click', '.post-card .toggle-comments', function () {
+    const postCardElement = $(this).closest('.post-card');
+    const post = postCardElement.data('post');
+    const commentListElement = postCardElement.find('.comment-list');
+  
+    setCommentsOnPost(post)
+      .then(function (post) {
+        console.log('building comments for the first time...', post);
+        commentListElement.empty()
+        post.comments.forEach(function(comment) {
+            commentListElement.append($(`
+            <h3><p>${ comment.body }</p> --- ${ comment.email }</h3>
+          `));
+        });
+
+        toggleComments(postCardElement);
+        })
+      
+      .catch(function () {
+        console.log('comments previously existed, only toggling...', post);
+        toggleComments(postCardElement)
+      });
+  });  
+
 $('#user-list').on('click', '.user-card .load-posts', function () {
     const user = $(this).closest('.user-card').data('user')
-    console.log(user)    //render posts for this user
+    console.log(user)  
+    
+    fetchPostComments(user.id)
+        .then(renderPostList)//render posts for this user
   });
 
 $('#user-list').on('click', '.user-card .load-albums', function () {
