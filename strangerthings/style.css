@@ -1,0 +1,16 @@
+.card { 
+    display: grid;
+    margin: 12px;
+    }
+
+.card-body {
+    background-color: rgb(186, 212, 192);
+}
+
+h5 {
+    border-bottom: 1px solid black;
+}
+
+#sell-item {
+    display: none;
+}
