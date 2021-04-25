@@ -12,7 +12,7 @@
     <title>Strangers Things</title>
 </head>
 <body>
-    <div class="register" style="width: 18rem;">
+    <!-- <div class="register" style="width: 18rem;">
         <form id="registering">
             <div class="form-group">
                 <h3>Register</h3>
@@ -33,9 +33,34 @@
                     id="exampleInputPassword"
                     placeholder="Password"
                 />
-            </div>
-            <button type="submit" id="register" class="btn btn-primary">Register</button>
+            </div> -->
+            <!-- <button type="submit" id="register" class="btn btn-primary">Register</button> -->
             <!-- <button type="submit" id="login" class="btn btn-primary">Login</button> -->
+        <!-- </form>
+    </div> -->
+    <div class="register" style="width: 18rem;">
+        <form id="register-user">
+            <div class="form-group">
+                <h3>Register</h3>
+                <label for="registerInputUsername">Username</label>
+                <input
+                    type="text"
+                    class="form-control"
+                    id="registerInputUsername"
+                    aria-describedby="usernameHelp"
+                    placeholder="Enter username"
+                />
+            </div>
+            <div class="form-group">
+                <label for="registerInputPassword">Password</label>
+                <input
+                    type="password"
+                    class="form-control"
+                    id="registerInputPassword"
+                    placeholder="Password"
+                />
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     </div>
         <!-- // form to post blog info // -->
@@ -58,6 +83,16 @@
                     <input type="text" class="form-control" placeholder="Username" aria-label="Username">
                     <span class="input-group-text">Location</span>
                     <input type="text" id="item-location" class="form-control" placeholder="[On Request]" aria-label="Server" required>
+                  </div>
+
+                  <div class="input-group mb-3">
+                    <label class="radio-inline">
+                        <span>Will deliver? </span>
+                        <input ngModel type="radio" name="optradio" checked value="true" id="place_Oreder">Yes
+                      </label>
+                        <label class="radio-inline">
+                        <input ngModel type="radio" name="optradio" value="false">No
+                      </label>
                   </div>
                   
                   <div class="input-group">
